@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { sequelize } from './config/database';
 import  './models';
+import userRoutes from './routes/user.routes';
 
 const app = express();
 const PORT = 3000;
@@ -13,6 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req: Request, res: Response) => {
   res.send('Library Management API is running');
 });
+
+app.use('/api/users', userRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({ message: 'Route not found.' });
