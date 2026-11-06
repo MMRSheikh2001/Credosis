@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { sequelize } from './config/database';
-import  './models';
+import './models';
 import userRoutes from './routes/user.routes';
+import bookRoutes from './routes/book.routes';
 
 const app = express();
 const PORT = 3000;
@@ -12,30 +13,31 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Library Management API is running');
+    res.send('Library Management API is running');
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/books', bookRoutes);
 
 app.use((req: Request, res: Response) => {
-  res.status(404).json({ message: 'Route not found.' });
+    res.status(404).json({ message: 'Route not found.' });
 });
 
 async function start() {
-  try {
-    await sequelize.authenticate();
-    console.log('Connected to SQLite successfully.');
+    try {
+        await sequelize.authenticate();
+        console.log('Connected to SQLite successfully.');
 
-    await sequelize.sync({ alter: true });
-    console.log('Database tables synced.');
+        await sequelize.sync({ alter: true });
+        console.log('Database tables synced.');
 
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error('Unable to start server:', error);
-    process.exit(1);
-  }
+        app.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error('Unable to start server:', error);
+        process.exit(1);
+    }
 }
 
 start();
