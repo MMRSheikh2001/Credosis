@@ -25,12 +25,24 @@ app.use((req: Request, res: Response) => {
     res.status(404).json({ message: 'Route not found.' });
 });
 
+
+
 async function start() {
     try {
         await sequelize.authenticate();
         console.log('Connected to SQLite successfully.');
 
+        // SQLite "alter" rebuilds tables, which fails while foreign keys are enforced.
+        await sequelize.query('PRAGMA foreign_keys = OFF');
+
+        // Remove leftovers from the earlier failed runs.
+        await sequelize.query('DROP TABLE IF EXISTS users_backup');
+        await sequelize.query('DROP TABLE IF EXISTS books_backup');
+        await sequelize.query('DROP TABLE IF EXISTS reservations_backup');
+
         await sequelize.sync({ alter: true });
+
+        await sequelize.query('PRAGMA foreign_keys = ON');
         console.log('Database tables synced.');
 
         app.listen(PORT, () => {
@@ -41,5 +53,6 @@ async function start() {
         process.exit(1);
     }
 }
+
 
 start();
