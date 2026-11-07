@@ -4,6 +4,7 @@ import { sequelize } from './config/database';
 import './models';
 import userRoutes from './routes/user.routes';
 import bookRoutes from './routes/book.routes';
+import reservationRoutes from './routes/reservation.routes';
 
 const app = express();
 const PORT = 3000;
@@ -18,6 +19,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/reservations', reservationRoutes);
 
 app.use((req: Request, res: Response) => {
     res.status(404).json({ message: 'Route not found.' });
